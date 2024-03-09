@@ -526,7 +526,7 @@ if (mek.key && mek.key.remoteJid === 'status@s.whatsapp.net') {
             return
         let chat = global.db.data.chats[msg.chat] || {}
        
-            await this.reply(conn.user.id, `
+            await m.reply(gss.user.id, `
             ≡ deleted a message 
             ┌─⊷  𝘼𝙉𝙏𝙄 𝘿𝙀𝙇𝙀𝙏𝙀 
             ▢ *Number :* @${participant.split`@`[0]} 
@@ -534,7 +534,7 @@ if (mek.key && mek.key.remoteJid === 'status@s.whatsapp.net') {
             `.trim(), msg, {
                         mentions: [participant]
                     })
-        this.copyNForward(conn.user.id, msg, false).catch(e => console.log(e, msg))
+        this.copyNForward(gss.user.id, msg, false).catch(e => console.log(e, msg))
     } catch (e) {
         console.error(e)
     }
