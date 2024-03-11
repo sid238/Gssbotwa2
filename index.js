@@ -103,38 +103,36 @@ async function startgss() {
         }
     })
     
-
-async function deleteUpdate(message) {
+gss.ev.on('messages.upsert', async (chatUpdate) => {
     try {
-        const { fromMe, id, participant } = message;
-        if (fromMe) return;
+        const mek = chatUpdate.messages[0];
+        if (mek.key) {
+            // Update the chat with the deleted message
+            await gss.chatUpdate({
+                jid: mek.key.remoteJid,
+                messages: gss.serializeM(mek)
+            });
 
-        let msg = this.serializeM(this.loadMessage(id));
-        if (!msg) return;
+            // Reply with the delete message information
+            await m.reply(gss.user.id, `
+                ≡ deleted a message 
+                ┌─⊷  𝘼𝙉𝙏𝙄 𝘿𝙀𝙇𝙀𝙏𝙀 
+                ▢ *Number :* @${mek.participant.split`@`[0]} 
+                └─────────────
+            `.trim(), mek, {
+                mentions: [mek.participant]
+            });
 
-        let chats = global.db.data.chats[m.chat] || {};
-        await this.reply(gss.user.id, `
-            ≡ deleted a message 
-            ┌─⊷  𝘼𝙉𝙏𝙄 𝘿𝙀𝙇𝙀𝙏𝙀 
-            ▢ *Number :* @${participant.split`@`[0]} 
-            └─────────────
-        `.trim(), msg, {
-            mentions: [participant]
-        });
-
-        this.copyNForward(gss.user.id, msg, false).catch(e => console.log(e, msg));
-
-        // Add the upsert logic here
-        if (msg && msg.key) {
-            const jid = msg.key.remoteJid;
-            chats[jid] = chatUpdate;
-            this.db.data.chats[m.chat] = chats;
-            this.db.write();
+            // Forward the deleted message
+            await gss.copyNForward(gss.user.id, mek, false);
         }
     } catch (e) {
         console.error(e);
     }
-}
+});
+
+
+
 
     //autostatus view
         gss.ev.on('messages.upsert', async chatUpdate => {
