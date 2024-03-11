@@ -64,7 +64,7 @@ if (global.db) setInterval(async () => {
   }, 30 * 1000)
 
 async function startgss() {
-    const { state, saveCreds } = await useMultiFileAuthState(`./session`)
+    const { state, saveCreds } = await useMultiFileAuthState(`./${sessionName}`)
 
     const gss = gssConnect({
         logger: pino({ level: 'silent' }),
