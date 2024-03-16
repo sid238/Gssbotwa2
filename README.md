@@ -21,12 +21,13 @@
 
 ---
 ### 1. FORK THIS REPO
-<a href='[https://github.com/gssbotwa/Gssbotwa2/fork' target="_blank"><img alt='Fork repo' src='https://img.shields.io/badge/Fork This Repo-black?style=for-the-badge&logo=git&logoColor=white'/></a>
+<a href='https://github.com/gssbotwa/Gssbotwa2/fork' target="_blank"><img alt='Fork repo' src='https://img.shields.io/badge/Fork This Repo-black?style=for-the-badge&logo=git&logoColor=white'/></a>
+
 
 ### 2. GET SESSION VIA PAIR CODE
 <a href='https://replit.com/@MHMODS/GSS-BOT-WA-PAIR?v=1' target="_blank"><img alt='Fork repo' src='https://img.shields.io/badge/Click here to get your session-black?style=for-the-badge&logo=opencv&logoColor=white'/></a>
 
-## `𝐌𝐨𝐧𝐠𝐨𝐃𝐁 𝐔𝐑𝐋.`    Your Bot Cannot run without this.
+## Your Bot Cannot run without this.
 
 ```
 mongodb+srv://mohsin:mohsin@cluster0.iauaztt.mongodb.net/?retryWrites=true&w=majority
@@ -93,7 +94,7 @@ mongodb+srv://mohsin:mohsin@cluster0.iauaztt.mongodb.net/?retryWrites=true&w=maj
 
 ---
 
-## `𝐃𝐄𝐕𝐄𝐋𝐎𝐏𝐄𝐑`
+## `ðƒð„ð•ð„ð‹ðŽðð„ð‘`
 <div align="left">
   <a href="[https://github.com/gssbotwa]"><img src="https://github.com/gssbotwa.png" width="150" height="200" alt="Ash"/></a>
 <a href="[https://github.com/chhaseeb47]"><img src="https://github.com/chhaseeb47.png" width="200" height="200" alt="Ash"/></a>
@@ -104,14 +105,14 @@ mongodb+srv://mohsin:mohsin@cluster0.iauaztt.mongodb.net/?retryWrites=true&w=maj
 | [SIDHARTH ](https://github.com/gssbotwa) |
 | Owner, Developer, Bug Fixer, Maintainer, updates|
 
-| [𝐂𝐇 𝐇𝐀𝐒𝐄𝐄𝐁](https://github.com/chhaseeb47) |
+| [ð‚ð‡ ð‡ð€ð’ð„ð„ð](https://github.com/chhaseeb47) |
 | CO.Devloper |
 
 
 
   </br> 
 <h4 align="left">
-##𝐒𝐮𝐩𝐩𝐨𝐫𝐭 :
+##ð’ð®ð©ð©ð¨ð«ð­ :
   
 ***Tap On Logo To Subscribe MY YouTube Channel***
 </p>
