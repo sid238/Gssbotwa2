@@ -170,7 +170,7 @@ gss.ev.on('group-participants.update', async (anu) => {
 
                 // Welcome message
                 if (anu.action == 'add') {
-                    const userName = num
+                    const userName = num.split('@')[0];
                     const joinTime = moment.tz('Asia/Kolkata').format('HH:mm:ss');
                     const joinDate = moment.tz('Asia/Kolkata').format('DD/MM/YYYY');
                     const membersCount = metadata.participants.length;
@@ -182,16 +182,16 @@ gss.ev.on('group-participants.update', async (anu) => {
                         contextInfo: {
                             externalAdReply: {
                                 showAdAttribution: false,
-                                title: metadata.subject,
-                                sourceUrl: global.link,
-                                body: ``
+                                title: userName,
+                                sourceUrl: ppuser,
+                                body: `${metadata.subject}`
                             }
                         }
                     });
                 }
                 // Left message
                 else if (anu.action == 'remove') {
-                    const userName = num
+                    const userName = num.split('@')[0];
                     const leaveTime = moment.tz('Asia/Kolkata').format('HH:mm:ss');
                     const leaveDate = moment.tz('Asia/Kolkata').format('DD/MM/YYYY');
                     const membersCount = metadata.participants.length;
@@ -203,9 +203,9 @@ gss.ev.on('group-participants.update', async (anu) => {
                         contextInfo: {
                             externalAdReply: {
                                 showAdAttribution: false,
-                                title: metadata.subject,
-                                sourceUrl: global.link,
-                                body: ``
+                                title: userName,
+                                sourceUrl: ppuser,
+                                body: `${metadata.subject}`
                             }
                         }
                     });
