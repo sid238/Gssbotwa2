@@ -506,14 +506,19 @@ if (!('autobio' in setting)) setting.autobio = false
         
 
 /*antiviewonce*/
-    if ( db.data.chats[m.chat].antiviewonce && m.isGroup && m.mtype == 'viewOnceMessageV2') {
-    	if (m.isBaileys && m.fromMe) return
-        let val = { ...m }
-        let msg = val.message?.viewOnceMessage?.message || val.message?.viewOnceMessageV2?.message
-        delete msg[Object.keys(msg)[0]].viewOnce
-        val.message = msg
-        await gss.sendMessage(m.chat, { forward: val }, { quoted: m })
+    if ((db.data.chats[m.chat].antiviewonce || db.data.chats[m.chat].antiviewonce) && m.mtype == 'viewOnceMessageV2') {
+    let val = { ...m };
+    let msg = val.message?.viewOnceMessage?.message || val.message?.viewOnceMessageV2?.message;
+    if (m.isGroup) {
+        if (m.isBaileys && m.fromMe) return;
+        delete msg[Object.keys(msg)[0]].viewOnce;
+        val.message = msg;
+        await gss.sendMessage(m.chat, { forward: val }, { quoted: m });
+    } else {
+        await gss.sendMessage(m.chat, msg, { quoted: m });
     }
+}
+
 
 /*AUTOBIO*/
 async function setBio() {
@@ -1511,20 +1516,6 @@ case 'editinfo': {
   }
 }
 break;
-
-
-case 'antiviewonce':{
-		        
-               if (args.length < 1) return m.reply('on/off?')
-               if (args[0] === 'on') {
-                  db.data.chats[m.chat].antiviewonce = true
-                  m.reply(`${command} is enabled`)
-               } else if (args[0] === 'off') {
-                  db.data.chats[m.chat].antiviewonce = false
-                  m.reply(`${command} is disabled`)
-               }
-               }
-            break
             
             case 'antilink': {
   if (isBan) return m.reply(mess.banned);
@@ -1601,11 +1592,11 @@ if (!isCreator) throw mess.owner;
         const antiviewonceSetting = args[0].toLowerCase();
         if (antiviewonceSetting === "on") {
             if (db.data.chats[m.chat]?.antiviewonce) return m.reply(`Antiviewonce Already Active`);
-            db.data.chats[m.chat].antiviewonce = true;
+            db.data.chats[m.chat].antiviewonce = true
             m.reply(`Antiviewonce Activated!`);
         } else if (antiviewonceSetting === "off") {
             if (!db.data.chats[m.chat]?.antiviewonce) return m.reply(`Antiviewonce Already Inactive`);
-            db.data.chats[m.chat].antiviewonce = false;
+            db.data.chats[m.chat].antiviewonce = false
             m.reply(`Antiviewonce Deactivated!`);
         } else {
             gss.sendPoll(m.chat, "Choose Antiviewonce Setting:", [`${prefix}antiviewonce on`, `${prefix}antiviewonce off`]);
