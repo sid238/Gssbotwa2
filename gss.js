@@ -460,7 +460,7 @@ let chats = db.data.chats[m.chat]
                 if (!('mute' in chats)) chats.mute = false
                 if (!('antilink' in chats)) chats.antilink = false
             } else global.db.data.chats[m.chat] = {
-                antiviewonce: false,
+                antiviewonce: true,
                 antibot: true,
                 mute: false,
                 antilink: false,
@@ -934,7 +934,7 @@ if (m.text) {
 
         if (quotedText.includes(menuMessage.toLowerCase())) {
             const selectedNumber = lowerText;
-            const subMenu = menuText[selectedNumber];
+            const subMenu = menuMessage[selectedNumber];
 
             if (subMenu !== undefined) {
                 await gss.sendMessage(m.chat, {
