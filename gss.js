@@ -918,7 +918,7 @@ if (m.text) {
 
     if (lowerText.includes('.menu2')) {
         await gss.sendMessage(m.chat, {
-            image: { url: 'https://telegra.ph/file/2ffe90aa02a050e3ef285.jpg' },
+            image: { url: 'https://telegra.ph/file/022f5c3d9ce54c8ccf648.jpg' },
             caption: menuMessage,
             contextInfo: {
                 externalAdReply: {
@@ -934,10 +934,10 @@ if (m.text) {
 
         if (quotedText.includes(menuMessage.toLowerCase())) {
             const selectedNumber = lowerText;
-            const subMenu = subMenus[selectedNumber];
+            const menuText = menuText[selectedNumber];
 
-            if (subMenu !== undefined) {
-                await gss.sendMessage(m.chat, subMenu, { quoted: m });
+            if (menuText !== undefined) {
+                await gss.sendMessage(m.chat, menuText, { quoted: m });
             } else {
                 await gss.sendMessage(m.chat, {text: 'Invalid menu number. Please select a number from the menu.'}, { quoted: m });
             }
