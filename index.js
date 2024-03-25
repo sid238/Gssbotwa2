@@ -87,7 +87,7 @@ async function startgss() {
 
 
    gss.ev.on('messages.upsert', async chatUpdate => {
-        console.log(JSON.stringify(chatUpdate, undefined, 2))
+       // console.log(JSON.stringify(chatUpdate, undefined, 2))
         try {
         mek = chatUpdate.messages[0]
         if (!mek.message) return
@@ -102,6 +102,20 @@ async function startgss() {
             console.log(err)
         }
     })
+
+
+
+
+async function antiBot(message) {
+    try {
+        const { text, fromMe } = message;
+        if (!fromMe && text.startsWith('BAE5')) {
+            await m.reply(message.chat, 'Bot detected');
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 
 
