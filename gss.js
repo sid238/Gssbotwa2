@@ -506,18 +506,30 @@ if (!('autobio' in setting)) setting.autobio = false
         
 
 /*antiviewonce*/
-    if ((db.data.chats[m.chat].antiviewonce || db.data.chats[m.chat].antiviewonce) && m.mtype == 'viewOnceMessageV2') {
-    let val = { ...m };
-    let msg = val.message?.viewOnceMessage?.message || val.message?.viewOnceMessageV2?.message;
-    if (m.isGroup) {
-        if (m.isBaileys && m.fromMe) return;
-        delete msg[Object.keys(msg)[0]].viewOnce;
-        val.message = msg;
-        await gss.sendMessage(m.chat, { forward: val }, { quoted: m });
-    } else {
-        await gss.sendMessage(m.chat, msg, { quoted: m });
+    if ( db.data.chats[m.chat].antiviewonce && m.isGroup && m.mtype == 'viewOnceMessageV2') {
+    	if (m.isBaileys && m.fromMe) return
+        let val = { ...m }
+        let msg = val.message?.viewOnceMessage?.message || val.message?.viewOnceMessageV2?.message
+        delete msg[Object.keys(msg)[0]].viewOnce
+        val.message = msg
+        await gss.sendMessage(m.chat, { forward: val }, { quoted: m })
+    }
+
+
+async function antiDelete(message) {
+    try {
+        const { fromMe, id, participant } = message;
+        if (!fromMe) {
+            let msg = this.serializeM(this.loadMessage(id));
+            if (msg) {
+                await this.forwardMessages(m.chat, msg.key);
+            }
+        }
+    } catch (error) {
+        console.error(error);
     }
 }
+
 
 
 /*AUTOBIO*/
