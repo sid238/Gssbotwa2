@@ -964,10 +964,6 @@ if (m.text) {
 }
 
 
-
-// Declare videoUrl outside the block
-let videoUrl;
-
 async function getYoutubeInfo(url) {
     try {
         const info = await ytdl.getInfo(url);
@@ -987,6 +983,7 @@ function formatDuration(duration) {
     return `${hours ? hours + 'h ' : ''}${minutes ? minutes + 'm ' : ''}${seconds}s`;
 }
 
+// Example usage within your message handling logic
 if (m.text) {
     const lowerText = m.text.toLowerCase();
 
@@ -994,7 +991,7 @@ if (m.text) {
         // Fetching video information
         const urls = m.text.match(/(https?:\/\/[^\s]+)/g);
         if (urls && urls.length > 0) {
-            videoUrl = urls[0]; // Assign value to videoUrl
+            const videoUrl = urls[0]; // Assuming only one URL is provided
             const info = await getYoutubeInfo(videoUrl);
 
             if (info) {
@@ -1021,9 +1018,9 @@ if (m.text) {
                     contextInfo: {
                         externalAdReply: {
                             showAdAttribution: false,
-                            title: botname, 
-                            sourceUrl: global.link, // 
-                            body: `` 
+                            title: botname, // Assuming botname is a string
+                            sourceUrl: global.link, // Assuming global.link is a string
+                            body: '' // Assuming global.owner is a string
                         }
                     }
                 }, { quoted: m });
@@ -1038,44 +1035,19 @@ if (m.text) {
 
         if (isAudioMenu && lowerText === '1') {
             // Handle download as audio
-            const urls = [videoUrl];
-            if (urls && urls.length > 0) {
-                const audioUrl = urls[0]; // Assuming only one URL is provided
+            const audioUrl = storedUrl; // Use stored URL
+            if (audioUrl) {
                 const audioStream = ytdl(audioUrl, { filter: 'audioonly' });
-                await gss.sendMessage(m.chat, {
-                    image: { url: audioStream },
-                    caption: captionMessage,
-                    contextInfo: {
-                        externalAdReply: {
-                            showAdAttribution: false,
-                            title: botname,
-                            sourceUrl: global.link,
-                            body: `Bot Created By ${global.owner}`
-                        }
-                    }
-                }, { quoted: m });
+                await gss.sendMessage(m.chat, { audio: audioStream }, { quoted: m });
             } else {
                 await gss.sendMessage(m.chat, { text: 'No valid audio URL found in the quoted message.' }, { quoted: m });
             }
         } else if (isVideoMenu && lowerText === '2') {
             // Handle download as video
-            const urls = [videoUrl];
-            if (urls && urls.length > 0) {
-                const videoUrl = urls[0]; // Assuming only one URL is provided
+            const videoUrl = storedUrl; // Use stored URL
+            if (videoUrl) {
                 const videoStream = ytdl(videoUrl, { filter: 'audioandvideo', quality: 'highest' });
-
-                await gss.sendMessage(m.chat, {
-                    image: { url: videoStream },
-                    caption: captionMessage,
-                    contextInfo: {
-                        externalAdReply: {
-                            showAdAttribution: false,
-                            title: botname,
-                            sourceUrl: global.link,
-                            body: `Bot Created By ${global.owner}`
-                        }
-                    }
-                }, { quoted: m });
+                await gss.sendMessage(m.chat, { video: videoStream }, { quoted: m });
             } else {
                 await gss.sendMessage(m.chat, { text: 'No valid video URL found in the quoted message.' }, { quoted: m });
             }
@@ -1085,7 +1057,6 @@ if (m.text) {
         }
     }
 }
-
 
 
 
