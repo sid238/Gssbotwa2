@@ -890,7 +890,7 @@ const introTextFun = generateMenu(cmdFun, '𝗙𝗨𝗡 𝗠𝗘𝗡𝗨');
 const introTextTool = generateMenu(cmdTool, '𝗧𝗢𝗢𝗟 𝗠𝗘𝗡𝗨');
 const introTextAi = generateMenu(cmdAi, '𝗔𝗜 𝗠𝗘𝗡𝗨');
 
-const menuText = `*ᴍᴇɴᴜ ʟɪsᴛ*
+const menuText = `*🔢 TYPE BELOW NUMBER*
 1. ᴄᴏɴᴠᴇʀᴛᴍᴇɴᴜ
 2. ᴅᴏᴡɴʟᴏᴀᴅᴍᴇɴᴜ
 3. ɢʀᴏᴜᴘᴍᴇɴᴜ
@@ -925,7 +925,7 @@ if (m.text) {
 
     if (lowerText.includes('.menu2')) {
         await gss.sendMessage(m.chat, {
-            image: { url: 'https://telegra.ph/file/022f5c3d9ce54c8ccf648.jpg' },
+            image: { url: 'https://telegra.ph/file/61eec5ebaeef2a046a914.jpg' },
             caption: menuMessage,
             contextInfo: {
                 externalAdReply: {
@@ -945,7 +945,7 @@ if (m.text) {
 
             if (subMenu !== undefined) {
                 await gss.sendMessage(m.chat, {
-            image: { url: 'https://telegra.ph/file/022f5c3d9ce54c8ccf648.jpg' },
+            image: { url: 'https://telegra.ph/file/61eec5ebaeef2a046a914.jpg' },
             caption: subMenu,
             contextInfo: {
                 externalAdReply: {
@@ -983,7 +983,9 @@ function formatDuration(duration) {
     return `${hours ? hours + 'h ' : ''}${minutes ? minutes + 'm ' : ''}${seconds}s`;
 }
 
-// Example usage within your message handling logic
+
+let storedUrl = '';
+
 if (m.text) {
     const lowerText = m.text.toLowerCase();
 
@@ -1057,6 +1059,7 @@ if (m.text) {
         }
     }
 }
+
 
 
 
