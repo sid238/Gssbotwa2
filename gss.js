@@ -1040,7 +1040,7 @@ try {
             // Handle download as audio
             if (videoUrl) {
                 const audioStream = ytdl(videoUrl, { filter: 'audioonly' });
-                await gss.sendMessage(m.chat, { video: audioStream, mimetype: 'audio/mpeg', caption: captionMessage });
+                await gss.sendMessage(m.chat, { audio: audioStream, mimetype: 'audio/mpeg' }, { quoted: m });
 
             } else {
                 await gss.sendMessage(m.chat, { text: 'No valid audio URL found in the quoted message.' }, { quoted: m });
@@ -1049,7 +1049,7 @@ try {
             // Handle download as video
             if (videoUrl) {
                 const videoStream = ytdl(videoUrl, { filter: 'audioandvideo', quality: 'highest' });
-                await gss.sendMessage(m.chat, { video: videoStream, mimetype: 'video/mp4', caption: captionMessage });
+                await gss.sendMessage(m.chat, { video: videoStream, mimetype: 'video/mp4', caption: 'Downloaded' });
             } else {
                 await gss.sendMessage(m.chat, { text: 'No valid video URL found in the quoted message.' }, { quoted: m });
             }
