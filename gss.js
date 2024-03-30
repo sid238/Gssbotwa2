@@ -927,7 +927,7 @@ const subMenus = {
 };
 
 
-if (m.text && command) {
+if (command) {
     const lowerText = m.text.toLowerCase();
 
     if (lowerText.includes('menu2')) {
