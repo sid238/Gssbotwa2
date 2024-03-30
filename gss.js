@@ -989,7 +989,7 @@ function formatDuration(duration) {
 }
 
 
-let storedUrl = '';
+let videoUrl = '';
 
 if (m.text) {
     const lowerText = m.text.toLowerCase();
@@ -1064,7 +1064,6 @@ if (m.text) {
         }
     }
 }
-
 
 
 
