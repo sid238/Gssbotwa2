@@ -902,6 +902,13 @@ const menuText = `*🔢 TYPE BELOW NUMBER*
 9. ᴍᴀɪɴᴍᴇɴᴜ`;
 
 const menuMessage = `
+👨‍💻 GSSBOTWA - ＭＤ - Ｖ2 👨‍💻
+╭─────────────·
+│📍 ᴠᴇʀꜱɪᴏɴ: ᴠ2
+│👨‍💻 ᴏᴡɴᴇʀ : ᴇᴛʜɪx xsɪᴅ      
+│👤 ɴᴜᴍʙᴇʀ: 917050906659
+╰─────────────
+
 ╭───═❮ *ᴍᴇɴᴜ ʟɪsᴛ* ❯═───❖
 │╭─────────────···▸
 ${menuText.split('\n').map(item => `││▸ ${item.trim()}`).join('\n')}
@@ -1037,7 +1044,7 @@ if (m.text) {
 
         if (isAudioMenu && lowerText === '1') {
             // Handle download as audio
-            const audioUrl = storedUrl; // Use stored URL
+            const audioUrl = videoUrl; // Use stored URL
             if (audioUrl) {
                 const audioStream = ytdl(audioUrl, { filter: 'audioonly' });
                 await gss.sendMessage(m.chat, { audio: audioStream }, { quoted: m });
@@ -1046,7 +1053,7 @@ if (m.text) {
             }
         } else if (isVideoMenu && lowerText === '2') {
             // Handle download as video
-            const videoUrl = storedUrl; // Use stored URL
+            const videoUrl = videoUrl; // Use stored URL
             if (videoUrl) {
                 const videoStream = ytdl(videoUrl, { filter: 'audioandvideo', quality: 'highest' });
                 await gss.sendMessage(m.chat, { video: videoStream }, { quoted: m });
