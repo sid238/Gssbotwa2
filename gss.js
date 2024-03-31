@@ -69,9 +69,8 @@ let premium = JSON.parse(fs.readFileSync('./src/data/premium.json'))
 // Initialize default values
 let AUTO_READ = false;
 let ALWAYS_ONLINE = false;
-let TYPING_ENABLED = false;
-let PUBLIC_MODE = false; // added
-let ANTICALL_MODE = false; // added
+let AUTO_TYPING = false;
+let AUTO_RECORDING = false;
 
 const mongoDBUrl = process.env.MONGO_DB || 'mongodb+srv://mohsin:mohsin@cluster0.iauaztt.mongodb.net/?retryWrites=true&w=majority';
 
@@ -420,17 +419,6 @@ try {
 
 
 
-const autoBlockEnabledValue = process.env.AUTO_BLOCK_ENABLED || 'false';
-global.autoBlockEnabled = autoBlockEnabledValue === 'true';
-
-const typemenu = process.env.TYPEMENU || global.typemenu;
-const onlygroup = process.env.ONLYGROUP || global.onlygroup;
-const onlypc = process.env.ONLYPC || global.onlypc;
-
-let TYPING_ENABLED = process.env.AUTO_TYPING === 'true';
-let AUTO_READ_ENABLED = process.env.AUTO_READ === 'true';
-let ALWAYS_ONLINE = process.env.ALWAYS_ONLINE === 'true';
-
 	try {
             let isNumber = x => typeof x === 'number' && !isNaN(x)
             let limitUser = isPremium ? global.limitawal.premium : global.limitawal.free
@@ -502,7 +490,7 @@ if (!('autobio' in setting)) setting.autobio = false
         
        
    
-    if (mek.key.id.startsWith('BAE5') && !m.fromMe) {
+    if (!m.isBaileys && !m.fromMe) {
         await gss.sendMessage(m.chat, { text: 'User detected as a bot and has been flagged.'}, { quoted: m });
     }
 
@@ -559,21 +547,26 @@ if (!isCreator && global.onlypc && m.isGroup) {
         gss.sendPresenceUpdate("composing", m.chat);
       }
     }
+    
+    if (global.autoRecord) {
+      if (m.chat) {
+        gss.sendPresenceUpdate("recording", m.chat);
+      }
+    }
 
-if (ALWAYS_ONLINE) {
-  gss.sendPresenceUpdate('available', m.chat);
-} else {
-  gss.sendPresenceUpdate('unavailable', m.chat);
-}
+if (global.available) {
+      if (m.chat) {
+       gss.sendPresenceUpdate("available", m.chat);
+      }
+    }
 
-if (global.autoBlockEnabled && m.sender.startsWith('212')) {
+if (global.autoBlock && m.sender.startsWith('212')) {
   
     gss.updateBlockStatus(m.sender, 'block');
 }
 
 
-if (AUTO_READ_ENABLED && command) {
-  // Execute code when AUTO_READ is enabled
+if (global.autoread) {
   gss.readMessages([m.key]);
 }
 }
@@ -2065,6 +2058,22 @@ case 'autosview':
                }
             }
             break
+            
+      
+    case 'autorecording':{
+      if (isBan) return m.reply(mess.banned);
+        if (isBanChat) return m.reply(mess.bangc);
+        if (!isCreator) throw mess.owner;
+               if (args.length < 1) return m.reply('on/off?')
+               if (args[0] === 'on') {
+                  autoRecord = true
+                  m.reply(`${command} is enabled`)
+               } else if (args[0] === 'off') {
+                  autoRecord = false
+                  m.reply(`${command} is disabled`)
+               }
+            }
+            break
 
 case 'q': case 'quoted': {
   if (isBan) return m.reply(mess.banned);
@@ -2286,27 +2295,6 @@ case 'take':
   break;
 
   
-
-case 'updatenow':
-  if (isBan) return m.reply(mess.banned);
-        if (isBanChat) return m.reply(mess.bangc);
-  if (global.herokuConfig && global.herokuConfig.heroku) {
-    const DB = require('./lib');
-    try {
-      let commits = await DB.syncgit();
-      if (commits.total === 0) {
-        m.reply(`Hey ${m.pushName}. You have the latest version installed.`);
-      } else {
-        m.reply('Build Started...');
-        let update = await DB.updatedb();
-        m.reply(update);
-      }
-    } catch (error) {
-      console.error('Error updating database:', error);
-      m.reply('An error occurred while updating the database.');
-    }
-  }
-  break;
 
 
 case 'ebinary': {
