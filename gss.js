@@ -2264,23 +2264,27 @@ case 'get':
   
   
     case 'send':
-case 'take':
-  if (isBan) return m.reply(mess.banned);
-        if (isBanChat) return m.reply(mess.bangc);
-  const quotedMessage = m.msg.contextInfo.quotedMessage;
-  let caption = null;
+case 'take': {
+    if (isBan) return m.reply(mess.banned);
+    if (isBanChat) return m.reply(mess.bangc);
 
-  if (quotedMessage && (quotedMessage.imageMessage || quotedMessage.videoMessage)) {
-    let mediaMessage = quotedMessage.imageMessage || quotedMessage.videoMessage;
+    const quotedMessage = m.msg.contextInfo.quotedMessage;
 
-    if (caption === null) {
-      caption = `${text}`;
+    if (quotedMessage && (quotedMessage.imageMessage || quotedMessage.videoMessage)) {
+        let mediaMessage = quotedMessage.imageMessage || quotedMessage.videoMessage;
+        let caption = text ? `${text}` : null;
+
+        try {
+            let mediaUrl = await gss.downloadAndSaveMediaMessage(mediaMessage);
+            gss.sendMedia(m.chat, mediaUrl, 'file', caption, m);
+        } catch (error) {
+            console.error('Error sending media:', error);
+            m.reply('Error sending media. Please try again later.');
+        }
     }
+}
+break;
 
-    let mediaUrl = await gss.downloadAndSaveMediaMessage(mediaMessage);
-    gss.sendMedia(m.chat, mediaUrl, 'file', caption, m);
-  }
-  break;
 
   
 
@@ -4278,6 +4282,24 @@ case 'gimage': case"img": {
 }
 break;
 
+
+case 'shorturl': case 'tiny': case 'tinyurl': {
+    if (!args[0]) return m.reply('Please provide a URL to shorten.');
+
+    const apiUrl = `https://tinyurl.com/api-create.php?url=${args[0]}`;
+
+    axios.get(apiUrl)
+        .then(response => {
+            const shortenedUrl = response.data;
+            const messageToSend = `Shortened URL: ${shortenedUrl}`;
+            gss.sendMessage(m.chat, messageToSend, { quoted: m });
+        })
+        .catch(error => {
+            console.error('Error shortening URL:', error);
+            m.reply('Error shortening URL. Please try again later.');
+        });
+}
+break;
 
 
 case 'sticker': case 's': case 'stickergif': case 'sgif': {
