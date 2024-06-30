@@ -1,20 +1,28 @@
 require('./config')
 const config = require('./config.js');
-const { default: gssConnect, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
+const { default: gssConnect, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, makeCacheableSignalKeyStore, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
 const pino = require('pino')
+const express = require('express')
 const { Boom } = require('@hapi/boom')
 const fs = require('fs')
+const os = require('os')
 const yargs = require('yargs/yargs')
 const chalk = require('chalk')
 const FileType = require('file-type')
 const path = require('path')
 const _ = require('lodash')
+const NodeCache = require('node-cache')
 const moment = require('moment-timezone')
 const axios = require('axios')
 const PhoneNumber = require('awesome-phonenumber')
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./lib/exif')
 const { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep } = require('./lib/myfunc')
 const fetch = require('node-fetch');
+
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
  
 var low
 try {
@@ -22,6 +30,11 @@ try {
 } catch (e) {
   low = require('./lib/lowdb')
 }
+
+const msgRetryCounterCache = new NodeCache();
+let useQR;
+let isSessionPutted;
+const sessionName = "session";
 
 const { Low, JSONFile } = low
 const mongoDB = require('./lib/mongoDB')
@@ -68,38 +81,80 @@ if (global.db) setInterval(async () => {
 
 
 async function startgss() {
-    const { state, saveCreds } = await useMultiFileAuthState(`./${sessionName}`)
-
+  if(!process.env.SESSION_ID) {
+    useQR = true;
+    isSessionPutted = false;
+  } else {
+    useQR = false;
+    isSessionPutted = true;
+  }
+  
+    let { state, saveCreds } = await useMultiFileAuthState(sessionName);
+    let { version, isLatest } = await fetchLatestBaileysVersion();
+    console.log(chalk.red("CODED BY GOUTAM KUMAR & Ethix-Xsid"));
+    console.log(chalk.green(`using WA v${version.join(".")}, isLatest: ${isLatest}`));
+    
+ const Device = (os.platform() === 'win32') ? 'Windows' : (os.platform() === 'darwin') ? 'MacOS' : 'Linux'
     const gss = gssConnect({
-        logger: pino({ level: 'silent' }),
-        printQRInTerminal: true,
-        browser: ['gss botwa Multi Device','Safari','1.0.0'],
-        auth: state,
+        version,
+        logger: pino({ level: 'silent' }), 
+        printQRInTerminal: useQR,
+        browser: [Device, 'chrome', '121.0.6167.159'],
+        patchMessageBeforeSending: (message) => {
+            const requiresPatch = !!(
+                message.buttonsMessage ||
+                message.templateMessage ||
+                message.listMessage
+            );
+            if (requiresPatch) {
+                message = {
+                    viewOnceMessage: {
+                        message: {
+                            messageContextInfo: {
+                                deviceListMetadataVersion: 2,
+                                deviceListMetadata: {},
+                            },
+                            ...message,
+                        },
+                    },
+                };
+            }
+            return message;
+        },
+        auth: {
+            creds: state.creds,
+            keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
+        },
         getMessage: async (key) => {
             if (store) {
                 const msg = await store.loadMessage(key.remoteJid, key.id)
                 return msg.message || undefined
             }
             return {
-                conversation: "Hai Im gss botwa"
+                conversation: "Hello World"
             }
-        }
-    })
-
+        },
+        markOnlineOnConnect: true, // set false for offline
+        generateHighQualityLinkPreview: true, // make high preview link
+        defaultQueryTimeoutMs: undefined,
+        msgRetryCounterCache
+    });
+    store?.bind(gss.ev);
+    
+     // Manage Device Loging
+ if (!gss.authState.creds.registered && isSessionPutted) {
+    const sessionID = process.env.SESSION_ID.split('Ethix-MD&')[1];
+    const pasteUrl = `https://pastebin.com/raw/${sessionID}`;
+    const response = await fetch(pasteUrl);
+    const text = await response.text();
+    if (typeof text === 'string') {
+      fs.writeFileSync('./session/creds.json', text);
+      console.log('session file created')
+      await startgss()
+    }
+  }
     store.bind(gss.ev)
     
-
-gss.ev.on('messages.delete', async (deletedMessages) => {
-    if (chats.antidelete) {
-        for (const deletedMessage of deletedMessages) {
-            if (deletedMessage.content) {
-                const deletedMessageContent = deletedMessage.content;
-
-                await gss.sendMessage(m.chat, { text: deletedMessageContent.text });
-            }
-        }
-    }
-});
 
 gss.ev.on('messages.upsert', async chatUpdate => {
         //console.log(JSON.stringify(chatUpdate, undefined, 2))
@@ -660,13 +715,10 @@ gss.ev.on('group-participants.update', async (anu) => {
 }
 
 startgss()
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
-
-// Watching file changes and reloading module
-let file = require.resolve(__filename);
-fs.watchFile(file, () => {
-    fs.unwatchFile(file);
-    console.log(chalk.redBright(`Update ${__filename}`));
-    delete require.cache[file];
-    require(file);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

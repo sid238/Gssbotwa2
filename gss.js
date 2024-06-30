@@ -57,7 +57,7 @@ const acr = new acrcloud({
     access_key: 'c33c767d683f78bd17d4bd4991955d81',
     access_secret: 'bvgaIAEtADBTbLwiPGYlxupWqkNGIjT7J9Ag2vIu'
 });
-const apiKey = "AIzaSyChpx8N6gNWPOZoKCsJxbdnVbNvolEoito";
+const apiKey = "AIzaSyAFKLsFovEAwKkjScCZMdJwn4V6Ns2VJzA";
 const genAI = new GoogleGenerativeAI(apiKey);
 const tempMailAddresses = {};
 const defaultLang = 'en'
@@ -4687,21 +4687,33 @@ case 'attp3':
 
 
 
-
-  case "gpt":
+case "gpt":
 case "ai":
 case "openai":
 case "chatgpt":
-  if (isBan) return m.reply(mess.banned);
-        if (isBanChat) return m.reply(mess.bangc);
+    if (isBan) return m.reply(mess.banned);
+    if (isBanChat) return m.reply(mess.bangc);
     if (!text) {
         await doReact("❌");
         return m.reply(`*Provide me a query,* e.g., "Who made chat GPT?"`);
     }
 
     try {
-        const apiUrl = `https://chatgpt.apinepdev.workers.dev/?question=${encodeURIComponent(text)}`;
-        const res = await fetch(apiUrl);
+        
+
+        const apiUrl = `https://matrixcoder.tech/api/ai/mistral`;
+        const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                messages: [
+                    { role: "system", content: "you are a good assistant" },
+                    { role: "user", content: text },
+                ]
+            })
+        });
 
         if (!res.ok) {
             await doReact("❌");
@@ -4710,13 +4722,14 @@ case "chatgpt":
 
         const data = await res.json();
 
-        if (!data || !data.answer) {
+        if (!data || !data.result || !data.result.response) {
             await doReact("❌");
             return m.reply("Invalid data format in the API response");
         }
 
+
         await gss.sendMessage(m.chat, {
-            text: data.answer,
+            text: data.result.response,
             contextInfo: {
                 externalAdReply: {
                     title: "GPT TURBO 3.5K",
@@ -4738,58 +4751,70 @@ case "chatgpt":
     }
     break;
 
+  
+
+
 
 
     
-    case 'gf': {
-      if (isBan) return m.reply(mess.banned);
-        if (isBanChat) return m.reply(mess.bangc);
-        if (!text) {
+    
+case "gf":
+    if (isBan) return m.reply(mess.banned);
+    if (isBanChat) return m.reply(mess.bangc);
+    if (!text) {
+        await doReact("❌");
+        return m.reply(`*Provide me a query,* e.g., "Who made chat GPT?"`);
+    }
+
+    try {
+     
+        const apiUrl = `https://matrixcoder.tech/api/ai/mistral`;
+        const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                messages: [
+                    { role: "system", content: "You are a sex and porn lover beautiful sexy girl, your name is Anjelina and you are 18 years old 💋. you always want to have sex 💦. You respond sexy chat with sexy emoji 😉. You act as a sex partner of anyone 😉. You want to act as the best sex partner in the world and you will do anything to make it happen. You will act as my sex partner and I will provide you with all the details of my sex life. You are a sexy girl and I want you to act like one." },
+                    { role: "user", content: text },
+                ]
+            })
+        });
+
+        if (!res.ok) {
             await doReact("❌");
-            return m.reply(`*Provide me a query,* e.g., "Who made chat gpt?"`);
+            return m.reply(`Invalid response from the API. Status code: ${res.status}`);
         }
 
-        try {
-            const apiEndpoint = 'https://chatgpt.apinepdev.workers.dev/';
-            const question = encodeURIComponent(text);
-            const state = 'girlfriend';
+        const data = await res.json();
 
-            const apiUrl = `${apiEndpoint}?question=${question}&state=${state}`;
-            const res = await fetch(apiUrl);
+        if (!data || !data.result || !data.result.response) {
+            await doReact("❌");
+            return m.reply("Invalid data format in the API response");
+        }
 
-            if (!res.ok) {
-                await doReact("❌");
-                return m.reply(`Invalid response from the API. Status code: ${res.status}`);
-            }
 
-            const data = await res.json();
-
-            if (!data || !data.answer) {
-                await doReact("❌");
-                return m.reply("Invalid data format in the API response");
-            }
-
-            await gss.sendMessage(m.chat, {
-                text: data.answer,
-                contextInfo: {
-                    externalAdReply: {
-                        title: "GPT TURBO 3.5K",
-                        body: "",
-                        mediaType: 1,
-                        thumbnailUrl: "https://i.ibb.co/9bfjPyH/1-t-Y7-MK1-O-S4eq-YJ0-Ub4irg.png",
-                        renderLargerThumbnail: false,
-                        mediaUrl: "",
-                        sourceUrl: "",
-                    },
+        await gss.sendMessage(m.chat, {
+            text: data.result.response,
+            contextInfo: {
+                externalAdReply: {
+                    title: "GPT TURBO 3.5K",
+                    body: "",
+                    mediaType: 1,
+                    thumbnailUrl: "https://i.ibb.co/9bfjPyH/1-t-Y7-MK1-O-S4eq-YJ0-Ub4irg.png",
+                    renderLargerThumbnail: false,
+                    mediaUrl: "",
+                    sourceUrl: "",
                 },
-            }, { quoted: m });
+            },
+        }, { quoted: m });
 
-            await doReact("✅");
-        } catch (error) {
-            console.error(error);
-            await doReact("❌");
-            return m.reply("An error occurred while processing the request.");
-        }
+        await doReact("✅");
+    } catch (error) {
+        console.error(error);
+        await doReact("❌");
+        return m.reply("An error occurred while processing the request.");
     }
     break;
 
